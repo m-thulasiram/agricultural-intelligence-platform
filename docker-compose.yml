@@ -1,0 +1,60 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: cropai-postgres
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-cropai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cropai_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-crop_health}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cropai} -d ${POSTGRES_DB:-crop_health}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cropai-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://cropai:cropai_secret@postgres:5432/crop_health}
+      SECRET_KEY: ${SECRET_KEY:-change-this-secret-key-in-production}
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+      CORS_ORIGINS: '["http://localhost:3000","http://localhost:5173"]'
+      MODELS_DIR: /app/models
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - ./models:/app/models
+      - ./uploads:/app/uploads
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cropai-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:8000/api/v1}
+
+volumes:
+  postgres_data:
+    driver: local

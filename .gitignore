@@ -1,0 +1,109 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+*.whl
+*.egg-info/
+*.so
+*.pyd
+*.manifest
+*.spec
+
+# Python Virtual Environment
+venv/
+.venv/
+virtualenv/
+env/
+ENV/
+
+# Python Testing
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.cache/
+test_crop_yield.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Machine Learning Models
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+yarn.lock
+package-lock.json
+
+# React Build
+frontend/build/
+
+# Environment Files
+.env
+.env.local
+.env.production
+.env.development
+.env.test
+
+# Docker
+docker-compose.override.yml
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.user
+
+# OS Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Uploads
+uploads/*
+!uploads/.gitkeep
+
+# Reports
+reports/*
+!reports/.gitkeep
+
+# Logs
+*.log
+logs/
+
+# Temporary
+tmp/
+temp/
+scratch/
