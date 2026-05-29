@@ -2,10 +2,13 @@ import logging
 import sys
 from datetime import datetime
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from .config import settings
 from .api import api_router
@@ -90,3 +93,21 @@ async def health_check():
         "database": "connected",
         "uptime": "running",
     }
+
+
+# Frontend build path
+frontend_build = Path(__file__).resolve().parents[3] / "frontend" / "build"
+
+if frontend_build.exists():
+    app.mount(
+        "/static",
+        StaticFiles(directory=str(frontend_build / "static")),
+        name="static",
+    )
+
+    @app.get("/{full_path:path}")
+    async def serve_react_app(full_path: str):
+        index_file = frontend_build / "index.html"
+        if index_file.exists():
+            return FileResponse(index_file)
+        return {"error": "Frontend build not found"}
